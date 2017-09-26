@@ -3,16 +3,14 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
+var flash = require('connect-flash');
+var User = require("./models/user.js");
 
-//load routes
-var index = require('./routes/index');
-var login = require('./routes/login');
-var dashboard = require('./routes/dashboard');
-var purchases = require('./routes/purchases');
-var stock = require('./routes/stock');
-var recipes = require('./routes/recipes');
-var production = require('./routes/production');
-var sales = require('./routes/sales');
+mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1',{ useMongoClient: true });
 
 var app = express();
 
@@ -20,24 +18,58 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-
 //middleware
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
+
+//session and passport config
+app.use(session({
+    secret: 'hahamyfriend',
+    name: 'zeus',
+    proxy: true,
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Initialize Passport
+var initPassport = require('./passport/init');
+initPassport(passport);
+
+//load routes
+var index = require('./routes/index');
+var login = require('./routes/login')(passport);
+var register = require('./routes/register')(passport);
+var logout = require('./routes/logout');
+var dashboard = require('./routes/dashboard');
+var purchases = require('./routes/purchases');
+var stock = require('./routes/stock');
+var recipes = require('./routes/recipes');
+var production = require('./routes/production');
+var sales = require('./routes/sales');
+var products = require('./routes/products');
+var saveProduct = require('./routes/saveProduct');
+var savePurchase = require('./routes/savePurchase');
 
 //set URLs
 app.use('/', index);
 app.use('/login', login);
-app.use('/register', login);
+app.use('/logout', logout);
+app.use('/register', register);
 app.use('/dashboard', dashboard);
 app.use('/compras', purchases);
 app.use('/estoque', stock);
 app.use('/receitas', recipes);
 app.use('/producao', production);
 app.use('/vendas', sales);
+app.use('/produtos', products);
+app.use('/saveProduct', saveProduct);
+app.use('/savePurchase', savePurchase);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

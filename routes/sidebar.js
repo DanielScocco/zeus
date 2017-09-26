@@ -1,7 +1,7 @@
 
-var urls = ["dashboard","compras","estoque","receitas","producao","vendas"];
-var names = ["Dashboard","Compras","Estoque","Receitas","Produção","Vendas"];
-var icons = ["fa-bar-chart","fa-cart-plus","fa-sitemap","fa-cutlery","fa-cogs","fa-money"];
+var urls = ["dashboard","produtos","compras","estoque","receitas","producao","vendas"];
+var names = ["Dashboard","Produtos","Compras","Estoque","Receitas","Produção","Vendas"];
+var icons = ["fa-bar-chart","fa-glass","fa-cart-plus","fa-sitemap","fa-cutlery","fa-cogs","fa-money"];
 
 function createSidebar(active){
 	var sidebar = "";

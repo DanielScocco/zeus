@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var createSidebar = require('./sidebar.js');
+var isAuthenticated = require('./isAuthenticated.js');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', isAuthenticated,function(req, res, next) {
   var sidebar = createSidebar('vendas');
 
   var content = `<section class="forms no-padding-bottom"> 

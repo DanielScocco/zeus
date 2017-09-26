@@ -1,18 +1,42 @@
 var express = require('express');
 var router = express.Router();
-var MongoClient = require('mongodb').MongoClient;
+var isAuthenticated = require('./isAuthenticated.js');
+var Product = require('../models/product');
+var Purchase = require('../models/purchase');
 
-//create var and connect to DB
-var db;
-MongoClient.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1',function(err,database){
-    if(err)
-        throw err;
-    db = database;    
+/* Get */
+router.get('/', isAuthenticated, function(req, res, next) { 
+    if(req.query['d']=='true'){
+        Purchase.remove({_id:req.query['id']}, function (err) {
+             if (err) console.log(err);
+             console.log("Removed purchase id="+req.query['id']);
+        });
+    }    
+    res.redirect("/compras");
 });
 
-/* GET home page. */
-router.post('/', function(req, res, next) {
-  res.redirect("/login");
+/* Post */
+router.post('/', isAuthenticated, function(req, res, next) { 
+    var purchase = new Purchase();   
+    purchase.companyId = req.user.companyId;
+    purchase.storeId = req.user.storeIds[0];
+    purchase.date = req.body.date;
+    purchase.productId = req.body.productId;
+    purchase.quantity = req.body.quantity;
+    purchase.supplier = req.body.supplier;
+    purchase.receiptNumber = req.body.receiptNumber;
+    purchase.totalCost = req.body.totalcost;
+
+    purchase.save(function(err) {
+            if (err){
+                console.log('Error in Saving Purchase: '+err);  
+                throw err;  
+            }
+            console.log('Purchase Registration succesful');       
+        });  
+
+    res.redirect("/compras");
+           
 });
 
 module.exports = router;
