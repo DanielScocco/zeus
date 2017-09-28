@@ -13,7 +13,7 @@ module.exports.formatDate = function (type,date){
     	return dd+"/"+mm+"/"+yyyy;
     }
     else if(type==2){
-    	return dd+"-"+mm+"-"+yyyy;	
+    	return yyyy+"-"+mm+"-"+dd;	
     }
     else{
     	return "00-00-0000";

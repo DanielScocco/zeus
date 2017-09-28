@@ -55,6 +55,9 @@ var sales = require('./routes/sales');
 var products = require('./routes/products');
 var saveProduct = require('./routes/saveProduct');
 var savePurchase = require('./routes/savePurchase');
+var stockEdit = require('./routes/stockEdit');
+var saveStockEdit = require('./routes/saveStockEdit');
+var saveRecipe = require('./routes/saveRecipe');
 
 //set URLs
 app.use('/', index);
@@ -70,6 +73,9 @@ app.use('/vendas', sales);
 app.use('/produtos', products);
 app.use('/saveProduct', saveProduct);
 app.use('/savePurchase', savePurchase);
+app.use('/ajusteEstoque', stockEdit);
+app.use('/saveStockEdit', saveStockEdit);
+app.use('/saveRecipe', saveRecipe);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -149,7 +149,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 					                    </div>
 					                    <div class="hidden" id="product2row">
 					                        <div class="form-inline">
-						                        <div class="col-md-2">
+						                        <div class="col-md-3">
 						                           <select name="subproduct2id" class="form-control custom-select">
 						                              ${productSelect}
 						                            </select> 
@@ -164,7 +164,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 						                </div> 
 						                <div class="hidden" id="product3row">
 					                        <div class="form-inline">
-						                        <div class="col-md-2">
+						                        <div class="col-md-3">
 						                           <select name="subproduct3id" class="form-control custom-select">
 						                              ${productSelect}
 						                            </select> 
@@ -179,7 +179,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 						                </div>     
 						                <div class="hidden" id="product4row">
 					                        <div class="form-inline">
-						                        <div class="col-md-2">
+						                        <div class="col-md-3">
 						                           <select name="subproduct4id" class="form-control custom-select">
 						                              ${productSelect}
 						                            </select> 
@@ -194,7 +194,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 						                </div>     
 						                <div class="hidden" id="product5row">
 					                        <div class="form-inline">
-						                        <div class="col-md-2">
+						                        <div class="col-md-3">
 						                           <select name="subproduct5id" class="form-control custom-select">
 						                              ${productSelect}
 						                            </select> 
@@ -224,6 +224,9 @@ router.get('/', isAuthenticated, function(req, res, next) {
 	              <div class="row">
 	                <div class="col-lg-12">
 	                  <div class="card">
+	                  <div class="card-header d-flex align-items-center">
+				                      <h3 class="h4">Lista de Produtos</h3>
+				                    </div>
 	                  	<div class="card-body">
 	                      <table class="table">
 	                        <thead>

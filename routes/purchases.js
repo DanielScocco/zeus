@@ -14,7 +14,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
   	if(err) console.log(err);  // log errors	
 
   	  //get date  	  
-      var currentDate = auxFunctions.formatDate(1,new Date());
+      var currentDate = auxFunctions.formatDate(2,new Date());
 
   	  //create select
   	  var productArray = {};
@@ -130,6 +130,9 @@ router.get('/', isAuthenticated, function(req, res, next) {
 		              <div class="row">
 		                <div class="col-lg-12">
 		                  <div class="card">
+		                  <div class="card-header d-flex align-items-center">
+				                      <h3 class="h4">Histórico de Compras</h3>
+				                    </div>
 		                  	<div class="card-body">
 		                      <table class="table">
 		                        <thead>
