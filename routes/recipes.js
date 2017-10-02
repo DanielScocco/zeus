@@ -16,7 +16,7 @@ router.get('/', isAuthenticated,function(req, res, next) {
   	  var productArray = {};
   	  var productSelect = '<option value="0">Selecione o produto</option>';
   	  for(var i=0;i<products.length;i++){
-  	  	if(products[i].isRawMaterial==0)
+  	  	if(products[i].isRawMaterial==1)
   	  		productSelect += '<option value="'+products[i]._id+'">'+products[i].name+'</option>';
   	  	productArray[products[i]._id] = products[i].name;
   	  }
@@ -25,15 +25,16 @@ router.get('/', isAuthenticated,function(req, res, next) {
   	  	if(err) console.log(err);  // log errors	
 
 	  	  var recipesList = "";
-
-	  	  for(var i=0;i<recipes.length;i++){	  	  	  
+	  	  var count = 0;
+	  	  for(var i=0;i<recipes.length;i++){
+	  	  	if(recipes[i].isActive==1){	  	  	  
 	  	  	  var recipeItems = '';
 	  	  	  for(var j=0;j<recipes[i].list.length;j++){	  	  	  	
 	  	  	  	if(j>0)
 	  	  	  		recipeItems += '<br>';
 	  	  	  	recipeItems += '<label class="form-control-label">'+productArray[recipes[i].list[j].id]+' x '+recipes[i].list[j].quantity+'</label>';
 	  	  	  }  	  	
-	  	  	  if(i%4==0)
+	  	  	  if(count%4==0)
 	  	  	  	recipesList += '<div class="row">';
 		  	  recipesList += `<div class="col-lg-3">
 				                  <div class="card">  
@@ -47,9 +48,11 @@ router.get('/', isAuthenticated,function(req, res, next) {
 				                    </div>				                   
 				                  </div>
 				                </div>`;
-				if((i+1)%4==0){
+				if((count+1)%4==0){
 					recipesList += '</div>';
 				}
+				count++;
+			  }
 			}
 	  
 		  var content = `<section class="forms no-padding-bottom"> 

@@ -7,7 +7,7 @@ var User = require('../models/user');
 /* Get */
 router.get('/', isAuthenticated, function(req, res, next) { 
     if(req.query['d']=='true'){
-        Recipe.remove({_id:req.query['rid']}, function (err) {
+        Recipe.update({_id:req.query['rid']},{$set:{isActive:0}}, function (err) {
              if (err) console.log(err);
         });
     }    
@@ -19,6 +19,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
     var recipe = new Recipe();
     recipe.companyId = req.user.companyId;
     recipe.name = req.body.name;    
+    recipe.isActive = 1;
    
     var list = [];
     var n = req.body.numberOfProducts;
@@ -27,7 +28,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
         var number = i + 1;
         var idName = 'subproduct' + number + 'id';
         var quantityName = 'subproduct' + number + 'quantity';
-        var pair = {id:req.body[idName],quantity:req.body[quantityName]};
+        var pair = {id:req.body[idName],quantity:parseFloat(req.body[quantityName])};
         list.push(pair);
     }
 

@@ -1,5 +1,6 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var User = require('../models/user');
+var CurrentStock = require('../models/currentStock');
 var bCrypt = require('bcrypt-nodejs');
 
 module.exports = function(passport){
@@ -29,7 +30,7 @@ module.exports = function(passport){
                         // set the user's local credentials
                         newUser.username = username;
                         newUser.password = createHash(password);
-                        newUser.email = req.param('email');
+                        newUser.email = req.body.email;
                         newUser.role = 10;
                         newUser.storeIds = ['59c8f6ab734d1d72c630c4b5'];
                         newUser.companyId = '59c8f67b734d1d72c630c49a';
@@ -40,7 +41,23 @@ module.exports = function(passport){
                                 console.log('Error in Saving user: '+err);  
                                 throw err;  
                             }
-                            console.log('User Registration succesful');    
+                            console.log('User Registration succesful');
+                              
+                            //create currentStock
+                            var currentStock = new CurrentStock();
+                            currentStock.companyId = '59c8f67b734d1d72c630c49a';
+						    currentStock.storeId = '59c8f6ab734d1d72c630c4b5';
+						    currentStock.lastUpdate = new Date();
+						    currentStock.list = {};
+
+						    currentStock.save(function(err) {
+					            if (err){
+					                console.log('Error in Saving CurrentStock: '+err);  
+					                throw err;  
+					            }
+					            console.log('CurrentStock Registration succesful');       
+					        }); 
+
                             return done(null, newUser);
                         });
                     }

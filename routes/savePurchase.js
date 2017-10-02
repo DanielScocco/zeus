@@ -3,6 +3,7 @@ var router = express.Router();
 var isAuthenticated = require('./isAuthenticated.js');
 var Product = require('../models/product');
 var Purchase = require('../models/purchase');
+var updateStock = require('./updateStock');
 
 /* Get */
 router.get('/', isAuthenticated, function(req, res, next) { 
@@ -10,6 +11,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
         Purchase.remove({_id:req.query['id']}, function (err) {
              if (err) console.log(err);
              console.log("Removed purchase id="+req.query['id']);
+             updateStock(req.user.companyId,req.user.storeIds[0]);
         });
     }    
     res.redirect("/compras");
@@ -28,12 +30,13 @@ router.post('/', isAuthenticated, function(req, res, next) {
     purchase.totalCost = req.body.totalcost;
 
     purchase.save(function(err) {
-            if (err){
-                console.log('Error in Saving Purchase: '+err);  
-                throw err;  
-            }
-            console.log('Purchase Registration succesful');       
-        });  
+        if (err){
+            console.log('Error in Saving Purchase: '+err);  
+            throw err;  
+        }
+        console.log('Purchase Registration succesful');  
+        updateStock(req.user.companyId,req.user.storeIds[0]);     
+    });  
 
     res.redirect("/compras");
            

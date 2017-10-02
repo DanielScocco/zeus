@@ -32,14 +32,14 @@ router.get('/', isAuthenticated, function(req, res, next) {
   	  	else
   	  		var purchased = "";
   	  	if(products[i].isSold==1)
-  	  		var sold = "X";
+  	  		var sold = "R$" + products[i].price.toFixed(2);
   	  	else
   	  		var sold = "";
   	  	if(products[i].isComposite==1){
   	  		var composition = "";
   	  		for(var j=0;j<products[i].list.length;j++){
   	  			if(j>0)
-  	  				composition += ", ";
+  	  				composition += "<br>";
   	  			composition += productArray[products[i].list[j].id] + " x" + products[i].list[j].quantity;
   	  		}
   	  	}
@@ -74,18 +74,26 @@ router.get('/', isAuthenticated, function(req, res, next) {
 				                        </div>			
 				                        <div class="col">
 				                            <div class="i-checks">
-				                              <input id="checkboxCustom1" type="checkbox" value="1" class="checkbox-template" name="israwmaterial">
+				                              <input type="checkbox" value="1" class="checkbox-template" name="israwmaterial">
 				                              <label for="checkboxCustom1">Matéria Prima</label>
 				                            </div>	
 				                            <div class="i-checks">
-				                              <input id="checkboxCustom1" type="checkbox" value="1" class="checkbox-template" name="ispurchased">
+				                              <input type="checkbox" value="1" class="checkbox-template" name="ispurchased">
 				                              <label for="checkboxCustom1">Comprado</label>
 				                            </div>	
 				                            <div class="i-checks">
-				                              <input id="checkboxCustom1" type="checkbox" value="1" class="checkbox-template" name="issold">
+				                              <input type="checkbox" value="1" class="checkbox-template" name="issold1">
 				                              <label for="checkboxCustom1">Vendido</label>
 				                            </div>				                             
-				                        </div>  		                        
+				                        </div>  	
+				                        <div class="hidden" id="price1">
+				                        <div class="col">                              
+					                       <div class="form-group">
+					                          <label for="inlineFormInput" class="sr-only">Preço</label>
+					                          <input name="price" type="number" step="0.01" placeholder="Preço" class="mx-sm-3 form-control">
+					                        </div>	
+					                    </div>	    
+					                    </div>                    
 				                      	<div class="col">                              
 					                        <div class="form-group">
 					                          <input type="submit" value="Salvar" class="mx-sm-3 btn btn-primary">
@@ -122,10 +130,18 @@ router.get('/', isAuthenticated, function(req, res, next) {
 				                              <label for="checkboxCustom1">Comprado</label>
 				                            </div>	
 				                            <div class="i-checks">
-				                              <input id="checkboxCustom1" type="checkbox" value="1" class="checkbox-template" name="issold">
+				                              <input id="checkboxCustom1" type="checkbox" value="1" class="checkbox-template" name="issold2">
 				                              <label for="checkboxCustom1">Vendido</label>
 				                            </div>				                             
 				                        </div>  
+				                        <div class="hidden" id="price2">
+				                        <div class="col">                              
+					                       <div class="form-group">
+					                          <label for="inlineFormInput" class="sr-only">Preço</label>
+					                          <input name="price" type="number" step="0.01" placeholder="Preço" class="mx-sm-3 form-control">
+					                        </div>	
+					                    </div>	    
+					                    </div> 
 				                        <div class="col">
 				                            <button onClick="addProductField()" type="button" class="mx-sm-3 btn btn-success"><i class="fa fa-plus"></i> Adicionar sub-produto</button>
 				                        </div>   				                       
@@ -234,7 +250,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 	                          	<th>Nome</th>
 	                            <th class="text-center">Matéria Prima</th>
 	                            <th class="text-center">Comprado</th>
-	                            <th class="text-center">Vendido</th>
+	                            <th class="text-center">Preço de Venda</th>
 	                            <th>Composição</th>	
 	                            <th></th>	                           
 	                          </tr>

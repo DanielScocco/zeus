@@ -110,8 +110,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
 								                    <input id="totalcost" name="totalcost" type="number" step="0.01" placeholder="Valor Total" class="mx-sm-3 form-control min150">	                             
 						                           </div>
 						                        </div>    
-								              </div>
-								              <div class="form-inline">
+								              
 								              	<div class="col">                              
 							                        <div class="form-group">
 							                          <input type="submit" value="Salvar" class="mx-sm-3 btn btn-primary">

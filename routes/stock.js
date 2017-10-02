@@ -3,117 +3,117 @@ var router = express.Router();
 var createSidebar = require('./sidebar.js');
 var isAuthenticated = require('./isAuthenticated.js');
 var Product = require('../models/product');
-var Purchase = require('../models/purchase');
 var StockEdit = require('../models/stockEdit');
 var auxFunctions = require('./auxFunctions');
+var CurrentStock = require('../models/currentStock');
 
 /* GET home page. */
 router.get('/', isAuthenticated,function(req, res, next) {
   Product.find({companyId:req.user.companyId},function(err, products){
   	if(err) console.log(err);  // log errors	 	  
 
-  	  //create productArray id => [name,composite,subproduct id,amount]
+  	  //create productArray id => name
   	  var productArray = {};  	  
   	  for(var i=0;i<products.length;i++){  	
-  	    if(products[i].isComposite)  	
-  	  		productArray[products[i]._id] = [products[i].name,products[i].isComposite,products[i].list[0].id,products[i].list[0].quantity];
-  	  	else
-  	  		productArray[products[i]._id] = [products[i].name,products[i].isComposite,null,null];
+  	    productArray[products[i]._id] = products[i].name;
   	  }
 
-  	  //create table body
-  	  Purchase.find({companyId:req.user.companyId},function(err, purchases){
+  	  //include adjustments
+  	  StockEdit.find({storeId:req.user.storeIds[0]},function(err, stockEdits){
   		if(err) console.log(err);  // log errors
 
-  		  //create product stock array  		  
-  		  var productStock = {};
-  		  for(var i=0;i<purchases.length;i++){
-  		  	//check if product is composite
-  		  	if(productArray[purchases[i].productId][1]==1){  		  		
-  		  		var id = productArray[purchases[i].productId][2];
-  		  		var quantity = purchases[i].quantity * productArray[purchases[i].productId][3];
-  		  	}
-  		  	else{
-  		  		var id = purchases[i].productId;
-  		  		var quantity = purchases[i].quantity;  		  		
-  		  	}
+  		var table2Body = "";
+  		for(var i=0;i<stockEdits.length;i++){
+  			var id = stockEdits[i].productId;
+		  	var quantity = stockEdits[i].adjustment; 
+	  	  	//stock edits table
+	  	  	var date = auxFunctions.formatDate(1,stockEdits[i].date);
+  	  	 	table2Body += `<tr>
+                        <th scope="row">${date}</th>
+                        <td class="text-center">${productArray[id][0]}</td>
+                        <td class="text-center">${quantity}</td>
+                        <td class="text-center">${stockEdits[i].reason}</td>                           
+                        <td><a href="/saveStockEdit?d=true&sid=${stockEdits[i]._id}"><i class="fa fa-remove"></i></a></td>                           
+                      </tr>`;
+  		}
+  	 
+  		CurrentStock.findOne({storeId:req.user.storeIds[0]},function(err, currentStock){
+  			if(err) console.log(err);  // log errors
 
-  		  	//product already in the array  	
-	  	  	if(productStock[id]!=null){	  	  	
-	  	  		productStock[id][0] = productStock[id][0] + quantity;
-	  	  		productStock[id][1] = purchases[i].date;
-	  	  	}
-	  	  	//add product to array
-	  	  	else{	  	  		
-	  	  		productStock[id] = [quantity,purchases[i].date];
-	  	  	}
+  		  var productStock = currentStock.list;
+
+	  	  //create stock table
+	  	  var tableBody = "";
+	  	  for(var id in productStock){
+	  	  	//var date = auxFunctions.formatDate(1,productStock[id][1]);
+	  	  	var date = "-";
+	  	  	var quantity = productStock[id].toFixed(2);
+	  	  	var parts = quantity.split(".");
+	  	  	if(parts[1]=='00')
+	  	  		quantity = parts[0];
+	  	  	tableBody += `<tr>
+                            <th scope="row">${productArray[id]}</th>
+                            <td class="text-center">${quantity}</td>
+                            <td class="text-center">-</td>
+                            <td class="text-center">${date}</td>                           
+                            <td><a href="/ajusteEstoque?pid=${id}"><i class="fa fa-edit"></i></a></td>                           
+                          </tr>`;
 	  	  }
 
-	  	  //include adjustments
-	  	  StockEdit.find({storeId:req.user.storeIds[0]},function(err, stockEdits){
-	  		if(err) console.log(err);  // log errors
 
-	  		var table2Body = "";
-	  		for(var i=0;i<stockEdits.length;i++){
-	  			var id = stockEdits[i].productId;
-  		  		var quantity = stockEdits[i].adjustment; 
-  		  		if(productStock[id]!=null){	  	  	
-		  	  		productStock[id][0] = productStock[id][0] + quantity;		  	  		
-		  	  	}
-		  	  	//add product to array
-		  	  	else{	  	  		
-		  	  		productStock[id] = [quantity,stockEdits[i].date];
-		  	  	}
+		  var sidebar = createSidebar('estoque');
 
-		  	  	//stock edits table
-		  	  	var date = auxFunctions.formatDate(1,stockEdits[i].date);
-	  	  	 	table2Body += `<tr>
-                            <th scope="row">${date}</th>
-                            <td class="text-center">${productArray[id][0]}</td>
-                            <td class="text-center">${quantity}</td>
-                            <td class="text-center">${stockEdits[i].reason}</td>                           
-                            <td><a href="/saveStockEdit?d=true&sid=${stockEdits[i]._id}"><i class="fa fa-remove"></i></a></td>                           
-                          </tr>`;
-	  		}
-	  	 
-
-		  	  //create stock table
-		  	  var tableBody = "";
-		  	  for(var id in productStock){
-		  	  	var date = auxFunctions.formatDate(1,productStock[id][1]);
-		  	  	tableBody += `<tr>
-	                            <th scope="row">${productArray[id][0]}</th>
-	                            <td class="text-center">${productStock[id][0]}</td>
-	                            <td class="text-center">-</td>
-	                            <td class="text-center">${date}</td>                           
-	                            <td><a href="/ajusteEstoque?pid=${id}"><i class="fa fa-edit"></i></a></td>                           
-	                          </tr>`;
-		  	  }
-
-
-			  var sidebar = createSidebar('estoque');
-
-			  var content = `<section class="tables no-padding-bottom">   
+		  var content = `<section class="tables no-padding-bottom">   
+		            <div class="container-fluid">
+		              <div class="row">
+		                <div class="col-lg-12">
+		                  <div class="card">
+		                  <div class="card-header d-flex align-items-center">
+			                      <h3 class="h4">Estoque Atual</h3>
+			                    </div>
+		                  	<div class="card-body">
+		                      <table class="table">
+		                        <thead>
+		                          <tr>
+		                            <th>Produto</th>
+		                            <th class="text-center">Quantidade</th>
+		                            <th class="text-center">Duração</th>
+		                            <th class="text-center">Última Compra</th>
+		                            <th></th>
+		                          </tr>
+		                        </thead>
+		                        <tbody>
+		                          ${tableBody}
+		                        </tbody>
+		                      </table>
+		                    </div>
+		                   </div>
+		                  </div>
+		                  </div>
+		                 </div>
+		                </section>
+		               
+		                <section class="tables no-padding-top">   
 			            <div class="container-fluid">
 			              <div class="row">
 			                <div class="col-lg-12">
 			                  <div class="card">
-			                  <div class="card-header d-flex align-items-center">
-				                      <h3 class="h4">Estoque Atual</h3>
-				                    </div>
+			                   <div class="card-header d-flex align-items-center">
+			                      <h3 class="h4">Ajustes de Estoque</h3>
+			                    </div>
 			                  	<div class="card-body">
 			                      <table class="table">
 			                        <thead>
 			                          <tr>
-			                            <th>Produto</th>
-			                            <th class="text-center">Quantidade</th>
-			                            <th class="text-center">Duração</th>
-			                            <th class="text-center">Última Compra</th>
+			                            <th>Data</th>
+			                            <th class="text-center">Produto</th>
+			                            <th class="text-center">Ajuste</th>
+			                            <th class="text-center">Motivo</th>
 			                            <th></th>
 			                          </tr>
 			                        </thead>
 			                        <tbody>
-			                          ${tableBody}
+			                          ${table2Body}
 			                        </tbody>
 			                      </table>
 			                    </div>
@@ -121,42 +121,12 @@ router.get('/', isAuthenticated,function(req, res, next) {
 			                  </div>
 			                  </div>
 			                 </div>
-			                </section>
-			               
-			                <section class="tables no-padding-top">   
-				            <div class="container-fluid">
-				              <div class="row">
-				                <div class="col-lg-12">
-				                  <div class="card">
-				                   <div class="card-header d-flex align-items-center">
-				                      <h3 class="h4">Ajustes de Estoque</h3>
-				                    </div>
-				                  	<div class="card-body">
-				                      <table class="table">
-				                        <thead>
-				                          <tr>
-				                            <th>Data</th>
-				                            <th class="text-center">Produto</th>
-				                            <th class="text-center">Ajuste</th>
-				                            <th class="text-center">Motivo</th>
-				                            <th></th>
-				                          </tr>
-				                        </thead>
-				                        <tbody>
-				                          ${table2Body}
-				                        </tbody>
-				                      </table>
-				                    </div>
-				                   </div>
-				                  </div>
-				                  </div>
-				                 </div>
-				                </section>`;
+			                </section>`;
 
-			  res.render('body', {user:"Tamboré", sidebar:sidebar, header:"Estoque",content:content,layout:'main'});
-			});
-	  });
-  });
+		  res.render('body', {user:"Tamboré", sidebar:sidebar, header:"Estoque",content:content,layout:'main'});
+		 });//currentStock
+		});//stockedits	 
+  });//product
 });
 
 module.exports = router;

@@ -15,6 +15,84 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 */
 
+//listener on  sales -> totalCost
+document.addEventListener("DOMContentLoaded", function (event) {
+    var _selector = document.getElementById("saleTotalCost");       
+    if(_selector!=null){     
+        _selector.addEventListener('change', function (event) {   
+            var price = parseFloat(document.querySelector('input[name=price]').value);            
+            var quantity = document.getElementById("saleQuantity");           
+            if(price!=null){
+                var totalCost = parseFloat(_selector.value);
+                var n = parseInt(totalCost / price);
+                quantity.value = ""+n;
+            }
+        });
+    }
+});
+
+//listener on  sales -> quantity
+document.addEventListener("DOMContentLoaded", function (event) {
+    var _selector = document.getElementById("saleQuantity");       
+    if(_selector!=null){     
+        _selector.addEventListener('change', function (event) {   
+            var price = parseFloat(document.querySelector('input[name=price]').value);            
+            var totalCost = document.getElementById("saleTotalCost");           
+            if(price!=null){
+                var quantity = parseInt(_selector.value);
+                var total = quantity * price;
+                totalCost.value = ""+total.toFixed(2);
+            }
+        });
+    }
+});
+
+//Listener on sales->product select
+document.addEventListener("DOMContentLoaded", function (event) {
+    var _selector = document.getElementById("saleProductId");       
+    if(_selector!=null){
+        var productPrices = document.getElementById("productPrices").value;
+        var price = document.querySelector('input[name=price]');
+        var products = productPrices.split(";");
+        var arr = {};
+        for(var i=0;i<products.length;i++){
+            var parts = products[i].split("-");
+            arr[parts[0]] = parts[1];
+        }
+        _selector.addEventListener('change', function (event) {            
+            price.value = String(parseFloat(arr[_selector.value]).toFixed(2));
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    var _selector = document.querySelector('input[name=issold1]');
+    if(_selector!=null){
+        _selector.addEventListener('change', function (event) {            
+            var priceDiv = document.getElementById("price1");        
+             if (_selector.checked) {
+                priceDiv.style.display = "block";               
+            } else {
+                priceDiv.style.display = "none";                
+            }
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    var _selector = document.querySelector('input[name=issold2]');
+    if(_selector!=null){
+        _selector.addEventListener('change', function (event) {            
+            var priceDiv = document.getElementById("price2");        
+             if (_selector.checked) {
+                priceDiv.style.display = "block";               
+            } else {
+                priceDiv.style.display = "none";                
+            }
+        });
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function (event) {
     var _selector = document.querySelector('input[name=unitcost]');
     if(_selector!=null){

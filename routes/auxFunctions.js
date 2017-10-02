@@ -1,8 +1,8 @@
  
 
-module.exports.formatDate = function (type,date){		
-    var dd = String(date.getUTCDate());
-    console.log(dd);
+module.exports.formatDate = function (type,dateString){	
+    var date = new Date(dateString);	
+    var dd = String(date.getUTCDate());    
     if(dd.length==1)
   	  dd = "0" + dd;
     var mm = String(date.getMonth()+1); //January is 0!

@@ -18,10 +18,29 @@ router.get('/', isAuthenticated, function(req, res, next) {
 router.post('/', isAuthenticated, function(req, res, next) { 
     var product = new Product();
     product.name = req.body.productName;
-    product.companyId = req.user.companyId;
-    product.isRawMaterial = req.body.israwmaterial;
-    product.isPurchased = req.body.ispurchased;
-    product.isSold = req.body.issold;
+    product.companyId = req.user.companyId;    
+
+    //rawMaterial
+    if(req.body.israwmaterial==1)
+        product.isRawMaterial = 1;
+    else
+        product.isRawMaterial = 0;
+
+    //purchased
+    if(req.body.ispurchased==1)
+        product.isPurchased = 1;
+    else
+        product.isPurchased = 0; 
+
+    //sold
+    if(req.body.issold1==1||req.body.issold2==1){
+        product.isSold = 1;
+        product.price = req.body.price;
+    }
+    else{
+        product.isSold = 0;
+        product.price = null;
+    }
 
     //composite product
     if(req.body.isComposite==1){        
@@ -38,8 +57,7 @@ router.post('/', isAuthenticated, function(req, res, next) {
         }
 
         product.list = list;
-        product.isComposite = 1;
-        
+        product.isComposite = 1;        
 
     }
     //not composite product

@@ -7,5 +7,6 @@ module.exports = mongoose.model('Product',{
     isSold: Number,
     isRawMaterial: Number,
     isComposite: Number,
+    price: Number,
     list:[]
 });
