@@ -6,5 +6,6 @@ module.exports = mongoose.model('Sale',{
     date: Date,
     productId: String, 
     quantity: Number,    
-    totalValue: Number
+    totalValue: Number,
+    list:[]
 });

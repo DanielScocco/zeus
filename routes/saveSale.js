@@ -54,15 +54,23 @@ router.post('/', isAuthenticated, function(req, res, next) {
 
 	  		}
 
-			if(enough){					
-			    var sale = new Sale();   				  
+			if(enough){				
+				//set date with + 8 hour, used because of data filters by month
+				var fullDate = new Date(req.body.date);					
+				fullDate.setHours(fullDate.getHours()+8);
+			    
 
+			    var sale = new Sale(); 	
 			    sale.companyId = req.user.companyId;
 			    sale.storeId = req.user.storeIds[0];
-			    sale.date = new Date();
+			    sale.date = fullDate;
 			    sale.productId = req.body.productId;
 			    sale.quantity  = req.body.quantity;
 			    sale.totalValue = req.body.saleTotalCost;
+			    if(productArray[req.body.productId].isComposite==1)
+			    	sale.list = productArray[req.body.productId].list;
+			    else
+			    	sale.list = null;
 			    
 			    sale.save(function(err) {
 			            if (err){

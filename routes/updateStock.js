@@ -74,8 +74,17 @@ function updateStock(companyId,storeId){
                   }
 
                   //include sales
-                  Sale.find({storeId:req.user.storeIds[0]},function(err, sales){
+                  Sale.find({storeId:storeId},function(err, sales){
                    if(err) console.log(err);  // log errors
+
+                   for(var i=0;i<sales.length;i++){                
+                      for(j=0;j<sales[i].list.length;j++){
+                         
+                         if(productStock[sales[i].list[j].id]!=null){                             
+                                productStock[sales[i].list[j].id] -= sales[i].quantity * sales[i].list[j].quantity;
+                         }
+                      }
+                  }
 
                     //console.log(JSON.stringify(productStock));          
 

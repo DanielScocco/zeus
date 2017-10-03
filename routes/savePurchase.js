@@ -19,10 +19,14 @@ router.get('/', isAuthenticated, function(req, res, next) {
 
 /* Post */
 router.post('/', isAuthenticated, function(req, res, next) { 
+	//set date with + 8 hour, used because of data filters by month
+	var fullDate = new Date(req.body.date);					
+	fullDate.setHours(fullDate.getHours()+8);
+
     var purchase = new Purchase();   
     purchase.companyId = req.user.companyId;
     purchase.storeId = req.user.storeIds[0];
-    purchase.date = req.body.date;
+    purchase.date = fullDate;
     purchase.productId = req.body.productId;
     purchase.quantity = req.body.quantity;
     purchase.supplier = req.body.supplier;
