@@ -26,56 +26,54 @@ module.exports = function(passport){
                         return done(null, false, req.flash('message','User Already Exists'));
                     } else {
                         // if there is no user with that email
-                        //create company
-
+                        //create company ansd store
                         var company = new Company();
                         company.save(function(err) {
                             if (err) console.log('Error in Saving New Company: '+err);
 
-                        });               
-                            
+                            var store = new Store();
+	                        store.save(function(err) {
+	                            if (err) console.log('Error in Saving New Company: '+err);
 
+	                            var newUser = new User();
 
-                        /*
+			                    // set the user's local credentials
+			                    newUser.username = username;
+			                    newUser.password = createHash(password);
+			                    newUser.email = req.body.email;
+			                    newUser.role = 10;
+			                    newUser.storeIds = [store._id];
+			                    newUser.companyId = company._id;
 
+			                    // save the user
+			                    newUser.save(function(err) {
+			                        if (err){
+			                            console.log('Error in Saving user: '+err);  
+			                            throw err;  
+			                        }
+			                        console.log('User Registration succesful');
+			                          
+			                        //create currentStock
+			                        var currentStock = new CurrentStock();
+			                        currentStock.companyId = '59c8f67b734d1d72c630c49a';
+								    currentStock.storeId = '59c8f6ab734d1d72c630c4b5';
+								    currentStock.lastUpdate = new Date();
+								    currentStock.list = {};
 
-                        var newUser = new User();
+								    currentStock.save(function(err) {
+							            if (err){
+							                console.log('Error in Saving CurrentStock: '+err);  
+							                throw err;  
+							            }
+							            console.log('CurrentStock Registration succesful');       
+							        }); 
 
-                        // set the user's local credentials
-                        newUser.username = username;
-                        newUser.password = createHash(password);
-                        newUser.email = req.body.email;
-                        newUser.role = 10;
-                        newUser.storeIds = ['59c8f6ab734d1d72c630c4b5'];
-                        newUser.companyId = '59c8f67b734d1d72c630c49a';
+			                        return done(null, newUser);
+			                    });
+	                        }); 
 
-                        // save the user
-                        newUser.save(function(err) {
-                            if (err){
-                                console.log('Error in Saving user: '+err);  
-                                throw err;  
-                            }
-                            console.log('User Registration succesful');
-                              
-                            //create currentStock
-                            var currentStock = new CurrentStock();
-                            currentStock.companyId = '59c8f67b734d1d72c630c49a';
-						    currentStock.storeId = '59c8f6ab734d1d72c630c4b5';
-						    currentStock.lastUpdate = new Date();
-						    currentStock.list = {};
-
-						    currentStock.save(function(err) {
-					            if (err){
-					                console.log('Error in Saving CurrentStock: '+err);  
-					                throw err;  
-					            }
-					            console.log('CurrentStock Registration succesful');       
-					        }); 
-
-                            return done(null, newUser);
-                        });
-
-                        */
+                        });     
+                        
                     }
                 });
             };
