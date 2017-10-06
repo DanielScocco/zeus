@@ -9,7 +9,7 @@ router.get('/', isAuthenticated,function(req, res, next) {
   var sidebar = createSidebar('dashboard');
   var date = new Date();
   var months = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-  var monthDays = daysInMonth(date.getMonth(),date.getFullYear());
+  var lastDay = daysInMonth(date.getMonth(),date.getFullYear());
   var monthString = months[date.getMonth()];
   var monthNumber = date.getMonth() + 1;
   var month = date.getMonth();
@@ -32,8 +32,18 @@ router.get('/', isAuthenticated,function(req, res, next) {
 
 	  console.log("sales="+sales.length);
 
+	  //aggregate sales by day
+	  var salesArr = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	  for(var i=0;i<sales.length;i++){
+	  	var currentDate = new Date(sales[i].date);
+	  	var currentDay = currentDate.getDate();
+	  	salesArr[currentDay-1] += sales[i].totalValue;
+	  }
+
+	  var monthlyEstimate = estimateSales(salesArr,lastDay);
+
 	  var tableBody = '';
-	  for(var i=1;i<=monthDays;i++){
+	  for(var i=1;i<=lastDay;i++){
 	  	if(i<10)
 	  		var day = "0" + i;
 	  	else 
@@ -42,7 +52,7 @@ router.get('/', isAuthenticated,function(req, res, next) {
 	  	var dateString = day + "/" + monthNumber + "/" + year;
 	  	tableBody += `<tr>
 	                    <th scope="row">${dateString}</th>
-	                    <td class="text-center">-</td>
+	                    <td class="text-center">R$ ${salesArr[i-1].toFixed(2)}</td>
 	                    <td class="text-center">-</td>                                              
 	                                             
 	                  </tr>`;
@@ -61,13 +71,13 @@ router.get('/', isAuthenticated,function(req, res, next) {
 	              				<div class="statistics col-lg-3 col-12">
 				                  <div class="statistic d-flex align-items-center bg-white has-shadow">
 				                    <div class="icon bg-blue"><i class="fa fa-dollar"></i></div>
-				                    <div class="text"><strong>R$232 mil</strong><br><small>Projeção de Vendas</small></div>
+				                    <div class="text"><strong>R$ ${monthlyEstimate}</strong><br><small>Projeção de Vendas</small></div>
 				                  </div>
 				                </div>
 				                <div class="statistics col-lg-3 col-12">
 				                  <div class="statistic d-flex align-items-center bg-white has-shadow">
 				                    <div class="icon bg-green"><i class="fa fa-percent"></i></div>
-				                    <div class="text"><strong>+14%</strong><br><small>Variação / Ano Passado</small></div>
+				                    <div class="text"><strong>-%</strong><br><small>Variação / Mes Passado</small></div>
 				                  </div>
 				                </div>
 				                <div class="statistics col-lg-3 col-12">
@@ -79,7 +89,7 @@ router.get('/', isAuthenticated,function(req, res, next) {
 				                <div class="statistics col-lg-3 col-12">
 				                  <div class="statistic d-flex align-items-center bg-white has-shadow">
 				                    <div class="icon bg-red"><i class="fa fa-percent"></i></div>
-				                    <div class="text"><strong>-13%</strong><br><small>Variação / Mẽs Passado</small></div>
+				                    <div class="text"><strong>-%</strong><br><small>Variação / Mẽs Passado</small></div>
 				                  </div>
 				                </div>
 	          				</div>
@@ -122,6 +132,20 @@ router.get('/', isAuthenticated,function(req, res, next) {
 
 function daysInMonth(month,year) {
     return new Date(year, month, 0).getDate();
+}
+
+function estimateSales(salesArr,lastDay){
+	var tot = 0;
+	var date = new Date();
+	var today = date.getDate();
+
+	if(today==1)
+		return 0
+
+	for(var i=0;i<today -1;i++)
+		tot += salesArr[i];
+
+	return (tot / (today-1)) * lastDay ;
 }
 
 module.exports = router;
