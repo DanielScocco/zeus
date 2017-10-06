@@ -1,6 +1,8 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var User = require('../models/user');
 var CurrentStock = require('../models/currentStock');
+var Store = require('../models/store');
+var Company = require('../models/company');
 var bCrypt = require('bcrypt-nodejs');
 
 module.exports = function(passport){
@@ -24,7 +26,19 @@ module.exports = function(passport){
                         return done(null, false, req.flash('message','User Already Exists'));
                     } else {
                         // if there is no user with that email
-                        // create the user
+                        //create company
+
+                        var company = new Company();
+                        company.save(function(err) {
+                            if (err) console.log('Error in Saving New Company: '+err);
+
+                        });               
+                            
+
+
+                        /*
+
+
                         var newUser = new User();
 
                         // set the user's local credentials
@@ -60,6 +74,8 @@ module.exports = function(passport){
 
                             return done(null, newUser);
                         });
+
+                        */
                     }
                 });
             };

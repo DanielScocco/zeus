@@ -2,22 +2,31 @@
 
 "use strict";
 var StockValue = require('../models/stockValue');
+var Store = require('../models/store');
 var calcStockValue = require('../routes/calcStockValue');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1',{ useMongoClient: true });
 
-calcStockValue(req.user.companyId,req.user.storeIds[0],function(err,stockValue){
-  	if(err) console.log(err);  // log errors	 
-  	  
-  	  var totalStockValue = 0;
-  	  for(var id in stockValue){
-  	  	totalStockValue += stockValue[id][1];
-  	  }
+//iterate through each store
+ Store.find({},function(err, stores){
+  	if(err) console.log(err);  // log errors	
 
-  	  console.log(totalStockValue);
+  	for(var s=0;s<stores.length;s++){
+  			
+  			calcStockValue(stores[s].companyId,stores[s]._id,function(err,stockValue){
+		  	if(err) console.log(err);  // log errors	 
+		  	  
+		  	  var totalStockValue = 0;
+		  	  for(var id in stockValue){
+		  	  	totalStockValue += stockValue[id][1];
+		  	  }
 
-  	  process.exit();
+		  	  console.log(totalStockValue);
+
+		  	  process.exit();
+		});
+	}
 });
 
 
