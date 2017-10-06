@@ -1,0 +1,23 @@
+#! /app/.heroku/node/bin/node
+
+"use strict";
+var StockValue = require('../models/stockValue');
+var calcStockValue = require('../routes/calcStockValue');
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1',{ useMongoClient: true });
+
+calcStockValue(req.user.companyId,req.user.storeIds[0],function(err,stockValue){
+  	if(err) console.log(err);  // log errors	 
+  	  
+  	  var totalStockValue = 0;
+  	  for(var id in stockValue){
+  	  	totalStockValue += stockValue[id][1];
+  	  }
+
+  	  console.log(totalStockValue);
+
+  	  process.exit();
+});
+
+
