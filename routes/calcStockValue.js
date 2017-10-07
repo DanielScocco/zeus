@@ -29,7 +29,7 @@ function calcStockValue(companyId,storeId, callback){
 
 		          for(var i=0;i<purchases.length;i++){
 		          	var totalCost = purchases[i].totalCost;
-		            //check if product is composite
+		            //check if product is composite		           
 		            if(productArray[purchases[i].productId].isComposite==1){ 		
 		            	//console.log("composite");            	       
 		                var id = productArray[purchases[i].productId].list[0].id;

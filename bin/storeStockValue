@@ -22,7 +22,19 @@ mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1
 		  	  	totalStockValue += stockValue[id][1];
 		  	  }
 
-		  	  console.log(totalStockValue);
+		  	  var stockValue = new StockValue();
+		  	  stockValue.companyId = stores[s].companyId;
+			  stockValue.storeId = stores[s]._id;
+			  stockValue.date = new Date();
+			  stockValue.value = totalStockValue;
+
+			  stockValue.save(function(err) {
+		            if (err){
+		                console.log('Error in Saving StockValue: '+err);  
+		                throw err;  
+		            }
+		            console.log('StockValue Registration succesful');       
+		        }); 
 
 		  	  process.exit();
 		});

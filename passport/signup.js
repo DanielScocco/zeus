@@ -32,6 +32,7 @@ module.exports = function(passport){
                             if (err) console.log('Error in Saving New Company: '+err);
 
                             var store = new Store();
+                            store.companyId = company._id;
 	                        store.save(function(err) {
 	                            if (err) console.log('Error in Saving New Company: '+err);
 
@@ -55,8 +56,8 @@ module.exports = function(passport){
 			                          
 			                        //create currentStock
 			                        var currentStock = new CurrentStock();
-			                        currentStock.companyId = '59c8f67b734d1d72c630c49a';
-								    currentStock.storeId = '59c8f6ab734d1d72c630c4b5';
+			                        currentStock.companyId = company._id;
+								    currentStock.storeId = store._id;
 								    currentStock.lastUpdate = new Date();
 								    currentStock.list = {};
 
