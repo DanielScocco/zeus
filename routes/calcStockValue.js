@@ -60,7 +60,7 @@ function calcStockValue(companyId,storeId, callback){
 
 		          }
 
-		          callback(null,stockValue);      
+		          callback(null,stockValue,companyId,storeId);      
 		                
 		    });//Purchases
 		});//CurrentStock

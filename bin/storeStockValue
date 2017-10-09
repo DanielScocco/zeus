@@ -4,6 +4,7 @@
 var StockValue = require('../models/stockValue');
 var Store = require('../models/store');
 var calcStockValue = require('../routes/calcStockValue');
+var auxFunctions = require('../routes/auxFunctions');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1',{ useMongoClient: true });
@@ -14,29 +15,30 @@ mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1
 
   	for(var s=0;s<stores.length;s++){
   			
-  			calcStockValue(stores[s].companyId,stores[s]._id,function(err,stockValue){
-		  	if(err) console.log(err);  // log errors	 
+  			calcStockValue(stores[s].companyId,stores[s]._id,function(err,stockValue,companyId,storeId){
+		      if(err) console.log(err);  // log errors	 
 		  	  
 		  	  var totalStockValue = 0;
 		  	  for(var id in stockValue){
 		  	  	totalStockValue += stockValue[id][1];
 		  	  }
 
-		  	  var stockValue = new StockValue();
-		  	  stockValue.companyId = stores[s].companyId;
-			  stockValue.storeId = stores[s]._id;
-			  stockValue.date = new Date();
-			  stockValue.value = totalStockValue;
+		  	  var stockValueDB = new StockValue();
+		  	  stockValueDB.companyId = companyId;
+			  stockValueDB.storeId = storeId;
+			  var currentDate = auxFunctions.formatDate(2,null);
+			  stockValueDB.date = currentDate;
+			  stockValueDB.value = totalStockValue;
 
-			  stockValue.save(function(err) {
+			  stockValueDB.save(function(err) {
 		            if (err){
-		                console.log('Error in Saving StockValue: '+err);  
-		                throw err;  
+		                console.log('Error in Saving StockValue: '+err); 		                 
 		            }
-		            console.log('StockValue Registration succesful');       
+		            console.log('StockValue Registration succesful');    
+		            process.exit();   
 		        }); 
 
-		  	  process.exit();
+		  	  
 		});
 	}
 });

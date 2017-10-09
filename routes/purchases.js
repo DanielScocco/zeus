@@ -14,7 +14,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
   	if(err) console.log(err);  // log errors	
 
   	  //get date  	  
-      var currentDate = auxFunctions.formatDate(2,new Date());
+      var currentDate = auxFunctions.formatDate(2,null);
 
   	  //create select
   	  var productArray = {};
@@ -25,8 +25,9 @@ router.get('/', isAuthenticated, function(req, res, next) {
   	  	productArray[products[i]._id] = products[i].name;
   	  }
 
+  	  
   	  //create table body
-  	  Purchase.find({companyId:req.user.companyId},function(err, purchases){
+  	  Purchase.find({storeId:req.user.storeIds[0]},function(err, purchases){
   		if(err) console.log(err);  // log errors	
 
   		  var tableBody = "";

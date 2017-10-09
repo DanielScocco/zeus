@@ -39,7 +39,7 @@ router.get('/', isAuthenticated,function(req, res, next) {
 		  	  	var date = auxFunctions.formatDate(1,stockEdits[i].date);
 	  	  	 	table2Body += `<tr>
 	                        <th scope="row">${date}</th>
-	                        <td class="text-center">${productArray[id][0]}</td>
+	                        <td class="text-center">${productArray[id]}</td>
 	                        <td class="text-center">${quantity}</td>
 	                        <td class="text-center">${stockEdits[i].reason}</td>                           
 	                        <td><a href="/saveStockEdit?d=true&sid=${stockEdits[i]._id}"><i class="fa fa-remove"></i></a></td>                           

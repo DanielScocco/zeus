@@ -1,19 +1,20 @@
  
 
 module.exports.formatDate = function (type,dateString){	
-    var date = new Date(dateString);	
-    var dd = String(date.getUTCDate());    
-    if(dd.length==1)
-  	  dd = "0" + dd;
-    var mm = String(date.getMonth()+1); //January is 0!
-    if(mm.length==1)
-  	  mm = "0" + mm;
-    var yyyy = date.getFullYear();
     if(type==1){
-    	return dd+"/"+mm+"/"+yyyy;
+        var parts = dateString.split("-");
+        return parts[2]+"/"+parts[1]+"/"+parts[0];
     }
     else if(type==2){
-    	return yyyy+"-"+mm+"-"+dd;	
+        var date = new Date();	
+        var dd = ""+date.getDate();
+        if(dd.length==1)
+      	  dd = "0" + dd;
+        var mm = String(date.getMonth()+1); //January is 0!
+        if(mm.length==1)
+      	  mm = "0" + mm;
+        var yyyy = date.getFullYear();
+        return yyyy+"-"+mm+"-"+dd;  
     }
     else{
     	return "00-00-0000";

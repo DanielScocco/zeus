@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 module.exports = mongoose.model('StockEdit',{
     companyId: String,
     storeId: String,
-    date: Date,
+    date: String,
     productId: String,
     adjustment: Number,
     reason: String,

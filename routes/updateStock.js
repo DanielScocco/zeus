@@ -77,13 +77,21 @@ function updateStock(companyId,storeId){
                   Sale.find({storeId:storeId},function(err, sales){
                    if(err) console.log(err);  // log errors
 
-                   for(var i=0;i<sales.length;i++){                
-                      for(j=0;j<sales[i].list.length;j++){
-                         
-                         if(productStock[sales[i].list[j].id]!=null){                             
-                                productStock[sales[i].list[j].id] -= sales[i].quantity * sales[i].list[j].quantity;
-                         }
-                      }
+                   //iterate
+                   for(var i=0;i<sales.length;i++){  
+                   	  //composite
+                   	  if(productArray[sales[i].productId].isComposite==1){             
+	                      for(j=0;j<sales[i].list.length;j++){
+	                         
+	                         if(productStock[sales[i].list[j].id]!=null){                             
+	                                productStock[sales[i].list[j].id] -= sales[i].quantity * sales[i].list[j].quantity;
+	                         }
+	                      }
+	                  }
+	                  //single
+	                  else{
+	                  	productStock[sales[i].productId] -= sales[i].quantity;
+	                  }
                   }
 
                     //console.log(JSON.stringify(productStock));          

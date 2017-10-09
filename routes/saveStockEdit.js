@@ -3,6 +3,8 @@ var router = express.Router();
 var isAuthenticated = require('./isAuthenticated.js');
 var StockEditReason = require('../models/stockEditReason');
 var StockEdit = require('../models/stockEdit');
+var auxFunctions = require('./auxFunctions');
+var updateStock = require('./updateStock');
 
 /* Get */
 router.get('/', isAuthenticated, function(req, res, next) { 
@@ -10,6 +12,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
         StockEdit.remove({_id:req.query['sid']}, function (err) {
              if (err) console.log(err);
              console.log("Removed stock edit id="+req.query['id']);
+             updateStock(req.user.companyId,req.user.storeIds[0]);  
         });
     }    
     res.redirect("/estoque");
@@ -41,7 +44,8 @@ router.post('/', isAuthenticated, function(req, res, next) {
         var stockEdit = new StockEdit();
         stockEdit.companyId = req.user.companyId;
         stockEdit.storeId = req.user.storeIds[0];
-        stockEdit.date = new Date();
+        var currentDate = auxFunctions.formatDate(2,null);
+        stockEdit.date = currentDate
         stockEdit.productId = req.body.pid; 
         stockEdit.adjustment = req.body.adjustment;
         stockEdit.reason = req.body.reason;
@@ -52,7 +56,8 @@ router.post('/', isAuthenticated, function(req, res, next) {
                     console.log('Error in Saving Stock Edit: '+err);  
                     throw err;  
                 }
-                console.log('Stock Edit Registration succesful');       
+                console.log('Stock Edit Registration succesful');  
+                updateStock(req.user.companyId,req.user.storeIds[0]);        
             }); 
 
         res.redirect("/estoque");

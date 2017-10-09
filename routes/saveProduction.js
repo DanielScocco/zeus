@@ -4,6 +4,7 @@ var isAuthenticated = require('./isAuthenticated.js');
 var CurrentStock = require('../models/currentStock');
 var Recipe = require('../models/recipe');
 var updateStock = require('./updateStock');
+var auxFunctions = require('./auxFunctions');
 var Production = require('../models/production');
 
 /* Get */
@@ -47,7 +48,8 @@ router.post('/', isAuthenticated, function(req, res, next) {
 				    var production = new Production();   
 				    production.companyId = req.user.companyId;
 				    production.storeId = req.user.storeIds[0];
-				    production.date = new Date();
+				    var currentDate = auxFunctions.formatDate(2,null);
+				    production.date = currentDate;
 				    production.recipeId = req.body.recipeId;
 				    production.quantity = req.body.quantity;
 				    production.list = recipe.list;

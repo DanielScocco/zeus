@@ -54,16 +54,11 @@ router.post('/', isAuthenticated, function(req, res, next) {
 
 	  		}
 
-			if(enough){				
-				//set date with + 8 hour, used because of data filters by month
-				var fullDate = new Date(req.body.date);					
-				fullDate.setHours(fullDate.getHours()+8);
-			    
-
+			if(enough){			
 			    var sale = new Sale(); 	
 			    sale.companyId = req.user.companyId;
 			    sale.storeId = req.user.storeIds[0];
-			    sale.date = fullDate;
+			    sale.date = req.body.date;
 			    sale.productId = req.body.productId;
 			    sale.quantity  = req.body.quantity;
 			    sale.totalValue = req.body.saleTotalCost;
