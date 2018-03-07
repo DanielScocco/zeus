@@ -10,7 +10,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var User = require("./models/user.js");
 
-mongoose.connect('mongodb://zeusadm:22njdk918dkfjd@ds141464.mlab.com:41464/zeus1',{ useMongoClient: true });
+mongoose.connect('mongodb://db',{ useMongoClient: true });
 
 var app = express();
 
